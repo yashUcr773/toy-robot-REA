@@ -1,14 +1,19 @@
-import * as readline from "readline";
-import { createStore } from 'redux';
-import handleCommand from "./commandHandler.js";
-import simulationState from "./simulationReducer.js";
+import * as readline from 'readline';
+import {ToyRobotSimulation} from "./toyRobotSimulation";
+import {toyRobotSimulationCommandAdaptor} from "./commandAdaptor";
 
-const reader = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-const simulation = createStore(simulationState);
+function main() {
+  const trsca = toyRobotSimulationCommandAdaptor(new ToyRobotSimulation(), console.log)
 
-reader.on('line', (command: string): void => {
-  handleCommand(command, simulation);
-});
+  console.log("Toy Robot Simulator is now ready for commands!")
 
-console.log("Please Enter a Command:");
+  const rl = readline.createInterface({
+    input: process.stdin,
+  })
+  rl.on('line', (line) => {
+    trsca.processCommand(line)
+  })
+}
+
+main()
