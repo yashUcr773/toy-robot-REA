@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "./build",
-    "allowJs": true,
-    "target": "esnext",
-    "moduleResolution": "node",
+    "target": "es2016",
+    "module": "commonjs",
     "esModuleInterop": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-  },
-  "include": ["./src/**/*"],
-  "exclude": [
-    "./node_modules",
-    "./build"
-  ]
+    "skipLibCheck": true,
+    "noEmit": true
+  }
 }
