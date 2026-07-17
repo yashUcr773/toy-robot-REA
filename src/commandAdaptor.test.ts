@@ -23,6 +23,12 @@ describe("integration", () => {
         "REPORT", "3,3,NORTH\n")
   })
 
+  test("should run back command", () => {
+    runAndCompareOutput("PLACE 1,2,EAST\n" +
+        "BACK\n" +
+        "REPORT", "0,2,EAST\n")
+  })
+
 })
 
 const runAndCompareOutput = (input: string, expectedOutput: string) => {

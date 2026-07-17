@@ -8,6 +8,7 @@ export const toyRobotSimulationCommandAdaptor = (toyRobotSimulation: ToyRobotSim
     switch (command) {
       case "PLACE": return place(commandString);
       case "MOVE": return toyRobotSimulation.moveRobot();
+      case "BACK": return toyRobotSimulation.backRobot();
       case "LEFT": return toyRobotSimulation.turnRobotLeft();
       case "RIGHT": return toyRobotSimulation.turnRobotRight();
       case "REPORT": return report();

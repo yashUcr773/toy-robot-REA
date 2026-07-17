@@ -93,6 +93,41 @@ describe("toyRobotSimulation", () => {
     })
   })
 
+  test("should move one unit back without changing orientation", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot({
+      ...originPosition(),
+      x: 0,
+      y: 1
+    });
+    simulation.backRobot()
+    expect(simulation.getRobot()).toEqual(originPosition())
+  })
+
+  test("should move one unit back from east", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot({
+      ...originPosition(),
+      x: 2,
+      y: 2,
+      orientation: Orientation.EAST
+    });
+    simulation.backRobot()
+    expect(simulation.getRobot()).toEqual({
+      ...originPosition(),
+      x: 1,
+      y: 2,
+      orientation: Orientation.EAST
+    })
+  })
+
+  test("should not move back beyond boundary", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot(originPosition());
+    simulation.backRobot()
+    expect(simulation.getRobot()).toEqual(originPosition())
+  })
+
   test("should turn left", () => {
     const simulation = fiveByFiveTable();
     simulation.placeRobot(originPosition());

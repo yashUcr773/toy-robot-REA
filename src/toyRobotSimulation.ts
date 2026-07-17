@@ -12,6 +12,15 @@ const inFrontOf = (position: Position): Position => {
   }
 }
 
+const behind = (position: Position): Position => {
+  const { x, y } = forwardMovement(position.orientation)
+  return {
+    orientation: position.orientation,
+    x: position.x - x,
+    y: position.y - y
+  }
+}
+
 
 export class ToyRobotSimulation {
 
@@ -33,6 +42,15 @@ export class ToyRobotSimulation {
   moveRobot(): void {
     if (this.robot) {
       const newPosition = inFrontOf(this.robot)
+      if (this.isPositionValid(newPosition)) {
+        this.robot = newPosition;
+      }
+    }
+  }
+
+  backRobot(): void {
+    if (this.robot) {
+      const newPosition = behind(this.robot)
       if (this.isPositionValid(newPosition)) {
         this.robot = newPosition;
       }
