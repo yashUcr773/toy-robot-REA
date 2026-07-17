@@ -7,12 +7,23 @@ export const toyRobotSimulationCommandAdaptor = (toyRobotSimulation: ToyRobotSim
     const command = commandString.split(" ")[0];
     switch (command) {
       case "PLACE": return place(commandString);
+      case "OBSTACLE": return obstacle(commandString);
       case "MOVE": return toyRobotSimulation.moveRobot();
       case "BACK": return toyRobotSimulation.backRobot();
       case "LEFT": return toyRobotSimulation.turnRobotLeft();
       case "RIGHT": return toyRobotSimulation.turnRobotRight();
       case "UNDO": return toyRobotSimulation.undoRobot();
       case "REPORT": return report();
+    }
+  }
+
+  const obstacle = (commandString: string): void => {
+    const match = commandString.match(/OBSTACLE (\d+),(\d+)/);
+    if (match) {
+      toyRobotSimulation.addObstacle({
+        x: parseInt(match[1], 10),
+        y: parseInt(match[2], 10)
+      })
     }
   }
 

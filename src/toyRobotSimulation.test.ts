@@ -53,6 +53,35 @@ describe("toyRobotSimulation", () => {
     expect(positionValid).toEqual(true)
   })
 
+  test("position with obstacle should be invalid", () => {
+    const simulation = new ToyRobotSimulation(5, 5, [{ x: 2, y: 2 }]);
+    const positionValid = simulation.isPositionValid({
+      ...originPosition(),
+      x: 2,
+      y: 2
+    })
+    expect(positionValid).toEqual(false)
+  })
+
+  test("should add obstacle inside table", () => {
+    const simulation = fiveByFiveTable();
+    simulation.addObstacle({ x: 2, y: 2 })
+    expect(simulation.hasObstacleAt({ x: 2, y: 2 })).toEqual(true)
+  })
+
+  test("should ignore obstacle outside table", () => {
+    const simulation = fiveByFiveTable();
+    simulation.addObstacle({ x: 5, y: 5 })
+    expect(simulation.hasObstacleAt({ x: 5, y: 5 })).toEqual(false)
+  })
+
+  test("should ignore obstacle on current robot position", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot(originPosition());
+    simulation.addObstacle(originPosition())
+    expect(simulation.hasObstacleAt(originPosition())).toEqual(false)
+  })
+
   test("placing robot at invalid position should be ignored", () => {
     const simulation = fiveByFiveTable();
     simulation.placeRobot(invalidPosition())
@@ -65,6 +94,12 @@ describe("toyRobotSimulation", () => {
     expect(simulation.getRobot()).toEqual(originPosition())
     simulation.placeRobot(invalidPosition())
     expect(simulation.getRobot()).toEqual(originPosition())
+  })
+
+  test("placing robot on obstacle should be ignored", () => {
+    const simulation = new ToyRobotSimulation(5, 5, [{ x: 0, y: 0 }]);
+    simulation.placeRobot(originPosition())
+    expect(simulation.getRobot()).toBeUndefined()
   })
 
   test("should move one unit north", () => {
@@ -91,6 +126,13 @@ describe("toyRobotSimulation", () => {
       x: 0,
       y: 4
     })
+  })
+
+  test("should not move into obstacle", () => {
+    const simulation = new ToyRobotSimulation(5, 5, [{ x: 0, y: 1 }]);
+    simulation.placeRobot(originPosition());
+    simulation.moveRobot()
+    expect(simulation.getRobot()).toEqual(originPosition())
   })
 
   test("should move one unit back without changing orientation", () => {
@@ -126,6 +168,19 @@ describe("toyRobotSimulation", () => {
     simulation.placeRobot(originPosition());
     simulation.backRobot()
     expect(simulation.getRobot()).toEqual(originPosition())
+  })
+
+  test("should not move back into obstacle", () => {
+    const simulation = new ToyRobotSimulation(5, 5, [{ x: 0, y: 0 }]);
+    simulation.placeRobot({
+      ...originPosition(),
+      y: 1
+    });
+    simulation.backRobot()
+    expect(simulation.getRobot()).toEqual({
+      ...originPosition(),
+      y: 1
+    })
   })
 
   test("should turn left", () => {
@@ -201,6 +256,14 @@ describe("toyRobotSimulation", () => {
     const simulation = fiveByFiveTable();
     simulation.placeRobot(originPosition());
     simulation.backRobot()
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toBeUndefined()
+  })
+
+  test("should not record obstacle blocked movements for undo", () => {
+    const simulation = new ToyRobotSimulation(5, 5, [{ x: 0, y: 1 }]);
+    simulation.placeRobot(originPosition());
+    simulation.moveRobot()
     simulation.undoRobot()
     expect(simulation.getRobot()).toBeUndefined()
   })

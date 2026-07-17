@@ -1,4 +1,4 @@
-import {Position} from "./position";
+import {Coordinate, Position} from "./position";
 import {forwardMovement, left, right} from "./orientation";
 
 const DEFAULT_TABLE_SIZE = 5;
@@ -24,17 +24,24 @@ const behind = (position: Position): Position => {
 const copyPosition = (position: Position | undefined): Position | undefined =>
   position ? { ...position } : undefined
 
+const copyCoordinate = (coordinate: Coordinate): Coordinate => ({ ...coordinate })
+
+const sameCoordinate = (first: Coordinate, second: Coordinate): boolean =>
+  first.x === second.x && first.y === second.y
+
 
 export class ToyRobotSimulation {
 
   private readonly tableSizeX: number
   private readonly tableSizeY: number
+  private readonly obstacles: Coordinate[] = []
   private robot: Position | undefined
   private readonly robotHistory: Array<Position | undefined> = []
 
-  constructor(tableSizeX?: number, tableSizeY?: number) {
+  constructor(tableSizeX?: number, tableSizeY?: number, obstacles?: Coordinate[]) {
     this.tableSizeX = tableSizeX ?? DEFAULT_TABLE_SIZE
     this.tableSizeY = tableSizeY ?? DEFAULT_TABLE_SIZE
+    obstacles?.forEach(obstacle => this.addObstacle(obstacle))
   }
 
   placeRobot(position: Position): void {
@@ -90,15 +97,39 @@ export class ToyRobotSimulation {
     }
   }
 
+  addObstacle(obstacle: Coordinate): void {
+    if (this.isCoordinateAvailableForObstacle(obstacle)) {
+      this.obstacles.push(copyCoordinate(obstacle))
+    }
+  }
+
+  hasObstacleAt(coordinate: Coordinate): boolean {
+    return this.obstacles.some(obstacle => sameCoordinate(obstacle, coordinate))
+  }
+
   getRobot(): Position | undefined {
     return this.robot;
   }
 
   isPositionValid(position: Position): boolean {
-    return position.x >= 0 &&
-        position.x < this.tableSizeX &&
-        position.y >= 0 &&
-        position.y < this.tableSizeY;
+    return this.isCoordinateInBounds(position) && !this.hasObstacleAt(position);
+  }
+
+  private isCoordinateInBounds(coordinate: Coordinate): boolean {
+    return coordinate.x >= 0 &&
+        coordinate.x < this.tableSizeX &&
+        coordinate.y >= 0 &&
+        coordinate.y < this.tableSizeY;
+  }
+
+  private isCoordinateAvailableForObstacle(coordinate: Coordinate): boolean {
+    return this.isCoordinateInBounds(coordinate) &&
+        !this.hasObstacleAt(coordinate) &&
+        !this.isCoordinateOccupiedByRobot(coordinate)
+  }
+
+  private isCoordinateOccupiedByRobot(coordinate: Coordinate): boolean {
+    return this.robot !== undefined && sameCoordinate(this.robot, coordinate)
   }
 
   private saveRobotForUndo(): void {

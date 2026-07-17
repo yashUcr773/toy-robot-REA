@@ -37,6 +37,19 @@ describe("integration", () => {
         "REPORT", "0,1,NORTH\n")
   })
 
+  test("should run obstacle command", () => {
+    runAndCompareOutput("OBSTACLE 0,1\n" +
+        "PLACE 0,0,NORTH\n" +
+        "MOVE\n" +
+        "REPORT", "0,0,NORTH\n")
+  })
+
+  test("should not place robot on obstacle from command", () => {
+    runAndCompareOutput("OBSTACLE 0,0\n" +
+        "PLACE 0,0,NORTH\n" +
+        "REPORT", "")
+  })
+
 })
 
 const runAndCompareOutput = (input: string, expectedOutput: string) => {

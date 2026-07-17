@@ -3,11 +3,12 @@
 ## Description
 
 - The application is a simulation of a toy robot moving on a square tabletop, of dimensions 5x5 units.
-- There are no other obstructions on the table surface.
+- Obstacles can be added to the table surface.
 - The robot is free to roam around the surface of the table, but must be prevented from falling to destruction. Any movement that would result in the robot falling from the table must be prevented, however further valid movement commands must still be allowed.
 - The application can read in commands of the following (textual) form:
 ```
     PLACE X,Y,F
+    OBSTACLE X,Y
     MOVE
     BACK
     LEFT
@@ -16,6 +17,7 @@
     REPORT
 ```
 - `PLACE` will put the toy robot on the table in position `X`,`Y` and facing `NORTH`, `SOUTH`, `EAST` or `WEST`.
+- `OBSTACLE` will add an obstacle at position `X`,`Y`. Obstacles outside the table or on the robot's current position are ignored.
 - The origin (0,0) can be considered to be the `SOUTH WEST` most corner.
 - The first valid command to the robot is a `PLACE` command, after that, any sequence of commands may be issued, in any order, including another `PLACE` command. The application should discard all commands in the sequence until a valid `PLACE` command has been executed.
 - `MOVE` will move the toy robot one unit forward in the direction it is currently facing.
@@ -24,7 +26,7 @@
 - `UNDO` will restore the toy robot to the state before the last successful state-changing command. Multiple `UNDO` commands will step back through earlier states.
 - `REPORT` will announce the `X,Y` and `F` of the robot. This can be in any form, but standard output is sufficient.
 - A robot that is not on the table can choose to ignore the `MOVE`, `BACK`, `LEFT`, `RIGHT`, `UNDO` and `REPORT` commands.
-- The toy robot does not fall off the table during movement. This also includes the initial placement of the toy robot. Any move that would cause the robot to fall is ignored.
+- The toy robot does not fall off the table or move onto an obstacle during movement. This also includes the initial placement of the toy robot. Any move that would cause the robot to fall or collide with an obstacle is ignored.
 
 ## Example Input and Output
 
