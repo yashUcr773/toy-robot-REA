@@ -21,12 +21,16 @@ const behind = (position: Position): Position => {
   }
 }
 
+const copyPosition = (position: Position | undefined): Position | undefined =>
+  position ? { ...position } : undefined
+
 
 export class ToyRobotSimulation {
 
   private readonly tableSizeX: number
   private readonly tableSizeY: number
   private robot: Position | undefined
+  private readonly robotHistory: Array<Position | undefined> = []
 
   constructor(tableSizeX?: number, tableSizeY?: number) {
     this.tableSizeX = tableSizeX ?? DEFAULT_TABLE_SIZE
@@ -35,7 +39,8 @@ export class ToyRobotSimulation {
 
   placeRobot(position: Position): void {
     if(this.isPositionValid(position)) {
-      this.robot = position
+      this.saveRobotForUndo()
+      this.robot = copyPosition(position)
     }
   }
 
@@ -43,6 +48,7 @@ export class ToyRobotSimulation {
     if (this.robot) {
       const newPosition = inFrontOf(this.robot)
       if (this.isPositionValid(newPosition)) {
+        this.saveRobotForUndo()
         this.robot = newPosition;
       }
     }
@@ -52,6 +58,7 @@ export class ToyRobotSimulation {
     if (this.robot) {
       const newPosition = behind(this.robot)
       if (this.isPositionValid(newPosition)) {
+        this.saveRobotForUndo()
         this.robot = newPosition;
       }
     }
@@ -59,6 +66,7 @@ export class ToyRobotSimulation {
 
   turnRobotLeft(): void {
     if(this.robot) {
+      this.saveRobotForUndo()
       this.robot = {
         ...this.robot,
         orientation: left(this.robot.orientation)
@@ -68,10 +76,17 @@ export class ToyRobotSimulation {
 
   turnRobotRight(): void {
     if(this.robot) {
+      this.saveRobotForUndo()
       this.robot = {
         ...this.robot,
         orientation: right(this.robot.orientation)
       }
+    }
+  }
+
+  undoRobot(): void {
+    if (this.robotHistory.length > 0) {
+      this.robot = copyPosition(this.robotHistory.pop())
     }
   }
 
@@ -84,6 +99,10 @@ export class ToyRobotSimulation {
         position.x < this.tableSizeX &&
         position.y >= 0 &&
         position.y < this.tableSizeY;
+  }
+
+  private saveRobotForUndo(): void {
+    this.robotHistory.push(copyPosition(this.robot))
   }
 
 }

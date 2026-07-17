@@ -11,6 +11,7 @@ export const toyRobotSimulationCommandAdaptor = (toyRobotSimulation: ToyRobotSim
       case "BACK": return toyRobotSimulation.backRobot();
       case "LEFT": return toyRobotSimulation.turnRobotLeft();
       case "RIGHT": return toyRobotSimulation.turnRobotRight();
+      case "UNDO": return toyRobotSimulation.undoRobot();
       case "REPORT": return report();
     }
   }

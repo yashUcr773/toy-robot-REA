@@ -148,6 +148,69 @@ describe("toyRobotSimulation", () => {
     })
   })
 
+  test("should undo last move", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot(originPosition());
+    simulation.moveRobot()
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toEqual(originPosition())
+  })
+
+  test("should undo turn left", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot(originPosition());
+    simulation.turnRobotLeft()
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toEqual(originPosition())
+  })
+
+  test("should undo first valid place", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot(originPosition());
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toBeUndefined()
+  })
+
+  test("should support multiple undos", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot(originPosition());
+    simulation.moveRobot()
+    simulation.turnRobotRight()
+    simulation.moveRobot()
+
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toEqual({
+      ...originPosition(),
+      x: 0,
+      y: 1,
+      orientation: Orientation.EAST
+    })
+
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toEqual({
+      ...originPosition(),
+      x: 0,
+      y: 1
+    })
+
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toEqual(originPosition())
+  })
+
+  test("should not record blocked movements for undo", () => {
+    const simulation = fiveByFiveTable();
+    simulation.placeRobot(originPosition());
+    simulation.backRobot()
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toBeUndefined()
+  })
+
+  test("should ignore undo with no history", () => {
+    const simulation = fiveByFiveTable();
+    simulation.undoRobot()
+    expect(simulation.getRobot()).toBeUndefined()
+  })
+
 })
 
 const invalidPosition = (): Position => ({

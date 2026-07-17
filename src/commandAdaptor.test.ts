@@ -29,6 +29,14 @@ describe("integration", () => {
         "REPORT", "0,2,EAST\n")
   })
 
+  test("should run undo command", () => {
+    runAndCompareOutput("PLACE 0,0,NORTH\n" +
+        "MOVE\n" +
+        "RIGHT\n" +
+        "UNDO\n" +
+        "REPORT", "0,1,NORTH\n")
+  })
+
 })
 
 const runAndCompareOutput = (input: string, expectedOutput: string) => {

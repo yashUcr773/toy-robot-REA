@@ -12,6 +12,7 @@
     BACK
     LEFT
     RIGHT
+    UNDO
     REPORT
 ```
 - `PLACE` will put the toy robot on the table in position `X`,`Y` and facing `NORTH`, `SOUTH`, `EAST` or `WEST`.
@@ -20,8 +21,9 @@
 - `MOVE` will move the toy robot one unit forward in the direction it is currently facing.
 - `BACK` will move the toy robot one unit backward from the direction it is currently facing without changing its orientation.
 - `LEFT` and `RIGHT` will rotate the robot 90 degrees in the specified direction without changing the position of the robot.
+- `UNDO` will restore the toy robot to the state before the last successful state-changing command. Multiple `UNDO` commands will step back through earlier states.
 - `REPORT` will announce the `X,Y` and `F` of the robot. This can be in any form, but standard output is sufficient.
-- A robot that is not on the table can choose to ignore the `MOVE`, `BACK`, `LEFT`, `RIGHT` and `REPORT` commands.
+- A robot that is not on the table can choose to ignore the `MOVE`, `BACK`, `LEFT`, `RIGHT`, `UNDO` and `REPORT` commands.
 - The toy robot does not fall off the table during movement. This also includes the initial placement of the toy robot. Any move that would cause the robot to fall is ignored.
 
 ## Example Input and Output
