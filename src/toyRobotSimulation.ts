@@ -1,5 +1,5 @@
-import {Position} from "./position";
-import {forwardMovement, left, right} from "./orientation";
+import { Coordinates, Position } from "./position";
+import { forwardMovement, left, right } from "./orientation";
 
 const DEFAULT_TABLE_SIZE = 5;
 
@@ -17,15 +17,17 @@ export class ToyRobotSimulation {
 
   private readonly tableSizeX: number
   private readonly tableSizeY: number
+  private readonly obstacles: Coordinates[]
   private robot: Position | undefined
 
   constructor(tableSizeX?: number, tableSizeY?: number) {
     this.tableSizeX = tableSizeX ?? DEFAULT_TABLE_SIZE
     this.tableSizeY = tableSizeY ?? DEFAULT_TABLE_SIZE
+    this.obstacles = []
   }
 
   placeRobot(position: Position): void {
-    if(this.isPositionValid(position)) {
+    if (this.isPositionValid(position)) {
       this.robot = position
     }
   }
@@ -40,7 +42,7 @@ export class ToyRobotSimulation {
   }
 
   turnRobotLeft(): void {
-    if(this.robot) {
+    if (this.robot) {
       this.robot = {
         ...this.robot,
         orientation: left(this.robot.orientation)
@@ -49,10 +51,19 @@ export class ToyRobotSimulation {
   }
 
   turnRobotRight(): void {
-    if(this.robot) {
+    if (this.robot) {
       this.robot = {
         ...this.robot,
         orientation: right(this.robot.orientation)
+      }
+    }
+  }
+
+  placeObject(): void {
+    if (this.robot) {
+      const newPosition = inFrontOf(this.robot)
+      if (this.isPositionValid(newPosition)) {
+        this.obstacles.push({ x: newPosition.x, y: newPosition.y })
       }
     }
   }
@@ -62,10 +73,21 @@ export class ToyRobotSimulation {
   }
 
   isPositionValid(position: Position): boolean {
+    return this.isInBounds(position) && !this.isObstacle(position)
+  }
+
+  isInBounds(position: Position) {
     return position.x >= 0 &&
-        position.x < this.tableSizeX &&
-        position.y >= 0 &&
-        position.y < this.tableSizeY;
+      position.x < this.tableSizeX &&
+      position.y >= 0 &&
+      position.y < this.tableSizeY;
+  }
+
+  isObstacle(position: Position) {
+    const val = this.obstacles.findIndex((obstacle) => {
+      return obstacle.x === position.x && obstacle.y === position.y
+    });
+    return val>=0
   }
 
 }
