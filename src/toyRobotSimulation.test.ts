@@ -30,6 +30,15 @@ describe("toyRobotSimulation", () => {
     expect(positionValid).toEqual(false)
   })
 
+    test("position with y axis greater than table size should be invalid", () => {
+    const positionValid = fiveByFiveTable().isPositionValid({
+      ...originPosition(),
+      x: 0,
+      y: 5
+    })
+    expect(positionValid).toEqual(false)
+  })
+
   test("far corner position is valid", () => {
     const positionValid = fiveByFiveTable().isPositionValid({
       ...originPosition(),
